@@ -1,0 +1,105 @@
+<div class="dashboard">
+  <h1>Аналитика в реальном времени</h1>
+
+  <div class="chart-card">
+    <h2>Продажи по месяцам</h2>
+    <label>
+      📅 Количество месяцев:
+      <input type="range" min="3" max="12" [(ngModel)]="monthRange" (change)="applyFilters()" />
+      <strong>{{ monthRange }}</strong>
+    </label>
+    <ngx-charts-line-chart
+      [view]="[1000, 400]"
+      [scheme]="'cool'"
+      [results]="salesData"
+      [animations]="true"
+      [autoScale]="true">
+    </ngx-charts-line-chart>
+    <button (click)="toggleLiveData()">
+      {{ liveDataEnabled ? '⏸️ Остановить' : '▶️ Запустить' }}
+    </button>
+  </div>
+
+  <div class="chart-card">
+    <h2>Доля продуктов</h2>
+    <label>
+      Фильтр продукта:
+      <select [(ngModel)]="selectedProduct" (change)="applyFilters()">
+        <option value="Все">Все</option>
+        <option *ngFor="let p of ['Смартфоны','Ноутбуки','Планшеты']" [value]="p">{{ p }}</option>
+      </select>
+    </label>
+    <ngx-charts-pie-chart
+      [view]="[500, 400]"
+      [results]="productShare"
+      [labels]="true"
+      [doughnut]="true">
+    </ngx-charts-pie-chart>
+    <button (click)="randomizePieData()">🎲 Случайные данные</button>
+  </div>
+
+  <div class="chart-card">
+    <h2>Продажи по регионам</h2>
+    <div class="filters">
+      <label *ngFor="let region of ['Москва','СПб','Казань']">
+        <input type="checkbox" [(ngModel)]="regionFilters[region]" (change)="applyFilters()" />
+        {{ region }}
+      </label>
+    </div>
+    <ngx-charts-bar-vertical
+      [view]="[800, 400]"
+      [results]="regionData"
+      [xAxis]="true"
+      [yAxis]="true"
+      [showDataLabel]="true">
+    </ngx-charts-bar-vertical>
+  </div>
+
+  <div class="chart-card">
+    <h2>Эффективность рекламы</h2>
+    <ngx-charts-bubble-chart
+      [view]="[800, 400]"
+      [results]="bubbleData"
+      [minRadius]="10"
+      [maxRadius]="40">
+    </ngx-charts-bubble-chart>
+  </div>
+
+  <div class="chart-card">
+    <h2>Динамика по направлениям</h2>
+    <ngx-charts-area-chart-stacked
+      [view]="[800, 400]"
+      [results]="areaData"
+      [scheme]="'vivid'"
+      [xAxis]="true"
+      [yAxis]="true"
+      [legend]="true"
+      [animations]="true">
+    </ngx-charts-area-chart-stacked>
+  </div>
+
+  <div class="chart-card">
+    <h2>KPI Выполнение</h2>
+    <ngx-charts-gauge
+      [view]="[400, 300]"
+      [results]="gaugeData"
+      [scheme]="'cool'"
+      [max]="100"
+      [min]="0"
+      [angleSpan]="240"
+      [startAngle]="-120">
+    </ngx-charts-gauge>
+  </div>
+
+  <div class="chart-card">
+    <h2>Активность по времени (по дням)</h2>
+    <ngx-charts-bar-vertical-2d
+      [view]="[800, 400]"
+      [results]="activityData"
+      [xAxis]="true"
+      [yAxis]="true"
+      [showDataLabel]="true"
+      [legend]="true">
+    </ngx-charts-bar-vertical-2d>
+  </div>
+</div>
