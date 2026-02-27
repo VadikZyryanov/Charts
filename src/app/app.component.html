@@ -4,7 +4,7 @@
   <div class="chart-card">
     <h2>Продажи по месяцам</h2>
     <label>
-      📅 Количество месяцев:
+      Количество месяцев:
       <input type="range" min="3" max="12" [(ngModel)]="monthRange" (change)="applyFilters()" />
       <strong>{{ monthRange }}</strong>
     </label>
@@ -13,10 +13,20 @@
       [scheme]="'cool'"
       [results]="salesData"
       [animations]="true"
-      [autoScale]="true">
+      [autoScale]="true"
+      [xAxis]="true"
+      [yAxis]="true"
+      [showXAxisLabel]="true"
+      [showYAxisLabel]="true"
+      xAxisLabel="Месяцы"
+      yAxisLabel="Выручка"
+      [legend]="true"
+      [timeline]="true"
+      [yAxisTickFormatting]="formatCurrency"
+      [xAxisTickFormatting]="formatMonth">
     </ngx-charts-line-chart>
     <button (click)="toggleLiveData()">
-      {{ liveDataEnabled ? '⏸️ Остановить' : '▶️ Запустить' }}
+      {{ liveDataEnabled ? 'Остановить' : 'Запустить' }}
     </button>
   </div>
 
@@ -35,7 +45,7 @@
       [labels]="true"
       [doughnut]="true">
     </ngx-charts-pie-chart>
-    <button (click)="randomizePieData()">🎲 Случайные данные</button>
+    <button (click)="randomizePieData()">Случайные данные</button>
   </div>
 
   <div class="chart-card">
@@ -49,19 +59,32 @@
     <ngx-charts-bar-vertical
       [view]="[800, 400]"
       [results]="regionData"
-      [xAxis]="true"
-      [yAxis]="true"
-      [showDataLabel]="true">
+      [showDataLabel]="true"
+      (select)="onRegionSelect($event)">
     </ngx-charts-bar-vertical>
+
+    <div *ngIf="selectedRegionDetails" class="details">
+      {{ selectedRegionDetails.name }} — {{ selectedRegionDetails.value }}
+    </div>
   </div>
 
   <div class="chart-card">
     <h2>Эффективность рекламы</h2>
     <ngx-charts-bubble-chart
-      [view]="[800, 400]"
+      [view]="[800,400]"
       [results]="bubbleData"
+      [xAxis]="true"
+      [yAxis]="true"
+      [showXAxisLabel]="true"
+      [showYAxisLabel]="true"
+      xAxisLabel="Бюджет (₽)"
+      yAxisLabel="Конверсия (%)"
       [minRadius]="10"
-      [maxRadius]="40">
+      [maxRadius]="50"
+      [legend]="true"
+      [autoScale]="true"
+      [xAxisTickFormatting]="formatMoney"
+      [yAxisTickFormatting]="formatPercent">
     </ngx-charts-bubble-chart>
   </div>
 
@@ -69,26 +92,31 @@
     <h2>Динамика по направлениям</h2>
     <ngx-charts-area-chart-stacked
       [view]="[800, 400]"
-      [results]="areaData"
-      [scheme]="'vivid'"
+      [results]="areaChartData"
       [xAxis]="true"
       [yAxis]="true"
+      [showXAxisLabel]="true"
+      [showYAxisLabel]="true"
+      xAxisLabel="Месяц"
+      [yAxisLabel]="areaMode === 'percent' ? 'Доля (%)' : 'Доход (₽)'"
       [legend]="true"
-      [animations]="true">
+      [animations]="true"
+      [yAxisTickFormatting]="areaMode === 'percent' ? formatPercent : formatMoney">
     </ngx-charts-area-chart-stacked>
+    <button (click)="toggleAreaMode()">
+      {{ areaMode === 'absolute' ? 'Показать %' : 'Показать значения' }}
+    </button>
   </div>
 
   <div class="chart-card">
     <h2>KPI Выполнение</h2>
     <ngx-charts-gauge
-      [view]="[400, 300]"
+      [view]="[400,260]"
       [results]="gaugeData"
-      [scheme]="'cool'"
       [max]="100"
-      [min]="0"
-      [angleSpan]="240"
-      [startAngle]="-120">
+      [min]="0">
     </ngx-charts-gauge>
+    <button (click)="randomizeGauge()">Случайный KPI</button>
   </div>
 
   <div class="chart-card">
@@ -101,5 +129,32 @@
       [showDataLabel]="true"
       [legend]="true">
     </ngx-charts-bar-vertical-2d>
+  </div>
+
+  <div class="chart-card">
+    <h2>ТОП продуктов</h2>
+    <ngx-charts-bar-horizontal
+      [view]="[700,350]"
+      [results]="topProducts"
+      [gradient]="true"
+      [showDataLabel]="true">
+    </ngx-charts-bar-horizontal>
+  </div>
+
+  <div class="chart-card">
+    <h2>Активность по дням и времени</h2>
+
+    <ngx-charts-heat-map
+      [view]="[700,350]"
+      [results]="heatmapData"
+      [scheme]="'vivid'"
+      [xAxis]="true"
+      [yAxis]="true"
+      [showXAxisLabel]="true"
+      [showYAxisLabel]="true"
+      xAxisLabel="Время суток"
+      yAxisLabel="День недели"
+      [animations]="true">
+    </ngx-charts-heat-map>
   </div>
 </div>
